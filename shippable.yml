@@ -1,0 +1,114 @@
+resources:
+# TF Files repo
+  - name: aws_ecs_repo
+    type: gitRepo
+    integration: "drship_github"
+    versionTemplate:
+      sourceName: "devops-recipes/prov_aws_ecs_terraform"
+      branch: master
+
+# AWS integration needed by Terraform
+  - name: aws_ecs_keys
+    type: integration
+    integration: "drship_aws"
+
+# State resource to store Terraform State
+  - name: aws_ecs_tf_state
+    type: state
+
+  - name: aws_ecs_cluster
+    type: cluster
+    integration: drship_aws
+    pointer:
+      sourceName : "tbd" #name of the cluster to which we are deploying
+      region: "tbd"
+
+jobs:
+  # Provision Cluster
+  - name: prov_aws_ecs_tf
+    type: runSh
+    steps:
+      - IN: aws_ecs_repo
+      - IN: aws_ecs_tf_state
+      - IN: aws_vpc_tf_info
+      - IN: aws_ecs_keys
+        switch: off
+      - TASK:
+          name: prov_cluster
+          runtime:
+            options:
+              env:
+                - ECS_CLUSTER: "cluster"
+                - ECS_KEY_PAIR_NAME: "dr_us_east_1"
+                - REGION: "us-east-1"
+                - MAX_INSTANCE_SIZE: 3
+                - MIN_INSTANCE_SIZE: 1
+                - DESIRED_CAPACITY: 2
+                - ECS_INSTANCE_TYPE: "t2.micro"
+                - ECS_AMI_ID: "ami-fad25980"
+                # implicitly set from aws_vpc_tf_info
+                #- vpc_id: ""
+                #- vpc_region: ""
+                #- vpc_public_sg_id: ""
+                #- $vpc_public_sn_id: ""
+        - script:
+            - pushd $(shipctl get_resource_state "aws_ecs_repo")
+            - export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_ecs_keys "accessKey")
+            - export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_ecs_keys "secretKey")
+            - shipctl copy_file_from_resource_state aws_ecs_tf_state terraform.tfstate .
+            - terraform init
+            - terraform plan -var-file=terraform.tfvars
+            - terraform apply -var-file=terraform.tfvars
+      - OUT: aws_ecs_cluster
+        overwrite: true
+      - OUT: aws_ecs_tf_state
+    on_success:
+      script:
+        - shipctl put_resource_state_multi aws_ecs_cluster "versionName=$ECS_CLUSTER" "sourceName=$ECS_CLUSTER" "region=$vpc_region"
+    always:
+      script:
+        - shipctl copy_file_to_resource_state terraform.tfstate aws_ecs_tf_state
+    flags:
+      - aws_ecs
+      - aws
+      - terraform
+
+#  # Deprovision Network - deprovision AWS IAM role and vpc with TERRAFORM
+#  - name: deprov_aws_ecs_tf
+#    type: runSh
+#    steps:
+#      - IN: prov_aws_ecs_tf
+#        switch: off
+#      - IN: aws_ecs_tf_state
+#        switch: off
+#      - IN: pect_net_conf
+#        switch: off
+#      - IN: aws_ecs_keys
+#        switch: off
+#      - IN: aws_ecs_repo
+#        switch: off
+#      - TASK:
+#          name: deprov_cluster
+#          runtime:
+#            options:
+#              env:
+#                - inst_type: "t2.micro"
+#                - inst_ami: "ami-43a15f3e"
+#                - aws_key_name: "dr_us_east_1"
+#        - script: |
+#            pushd $(shipctl get_resource_state "aws_ecs_repo")/provision-cluster
+#              shipctl copy_file_from_resource_state aws_ecs_tf_state terraform.tfstate .
+#              shipctl replace terraform.tfvars
+#              terraform destroy -force
+#            popd
+#      - OUT: test_vpc_conf
+#      - OUT: aws_ecs_tf_state
+#    on_success:
+#      - script: echo "SUCCESS"
+#    on_failure:
+#      - script: echo "FAILURE"
+#    always:
+#      - script: |
+#          pushd $(shipctl get_resource_state "aws_ecs_repo")/provision-cluster
+#            shipctl copy_file_to_resource_state terraform.tfstate aws_ecs_tf_state
+#          popd
