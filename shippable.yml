@@ -52,7 +52,7 @@ jobs:
                 - DESIRED_CAPACITY: 2
                 - ECS_INSTANCE_TYPE: "t2.micro"
                 - ECS_AMI_ID: "ami-fad25980"
-        - script:
+          script:
             - pushd $(shipctl get_resource_state "aws_ecs_repo")
             - export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_ecs_keys "accessKey")
             - export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_ecs_keys "secretKey")
