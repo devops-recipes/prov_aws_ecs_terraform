@@ -60,7 +60,7 @@ jobs:
             - shipctl copy_file_from_resource_state aws_ecs_tf_state terraform.tfstate .
             - terraform init
             - terraform plan -var-file=terraform.tfvars
-            - terraform apply -var-file=terraform.tfvars
+            - terraform apply -auto-approve -var-file=terraform.tfvars
       - OUT: aws_ecs_cluster
         overwrite: true
       - OUT: aws_ecs_tf_state
