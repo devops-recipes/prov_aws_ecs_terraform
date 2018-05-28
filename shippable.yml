@@ -16,9 +16,10 @@ resources:
   - name: aws_ecs_tf_state
     type: state
 
+# Cluster info output
   - name: aws_ecs_cluster
     type: cluster
-    integration: drship_aws
+    integration: "drship_aws"
     pointer:
       sourceName : "tbd" #name of the cluster to which we are deploying
       region: "tbd"
@@ -38,6 +39,11 @@ jobs:
           runtime:
             options:
               env:
+                # implicitly set from aws_vpc_tf_info
+                #- vpc_id: ""
+                #- vpc_region: ""
+                #- vpc_public_sg_id: ""
+                #- $vpc_public_sn_id: ""
                 - ECS_CLUSTER: "cluster"
                 - ECS_KEY_PAIR_NAME: "dr_us_east_1"
                 - REGION: "us-east-1"
@@ -46,11 +52,6 @@ jobs:
                 - DESIRED_CAPACITY: 2
                 - ECS_INSTANCE_TYPE: "t2.micro"
                 - ECS_AMI_ID: "ami-fad25980"
-                # implicitly set from aws_vpc_tf_info
-                #- vpc_id: ""
-                #- vpc_region: ""
-                #- vpc_public_sg_id: ""
-                #- $vpc_public_sn_id: ""
         - script:
             - pushd $(shipctl get_resource_state "aws_ecs_repo")
             - export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_ecs_keys "accessKey")
