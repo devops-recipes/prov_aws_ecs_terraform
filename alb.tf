@@ -10,8 +10,8 @@ resource "aws_alb" "ecsLoadBalancer" {
   }
 }
 
-resource "aws_alb_target_group" "ecs_target_group" {
-  name = "ecs_target_group"
+resource "aws_alb_target_group" "ecsTargetGroup" {
+  name = "ecsTargetGroup"
   port = "80"
   protocol = "HTTP"
   vpc_id = "${var.vpc_id}"
@@ -28,7 +28,7 @@ resource "aws_alb_target_group" "ecs_target_group" {
   }
 
   tags {
-    Name = "ecs_target_group"
+    Name = "ecsTargetGroup"
   }
 }
 
@@ -38,7 +38,7 @@ resource "aws_alb_listener" "alb_listener" {
   protocol = "HTTP"
 
   default_action {
-    target_group_arn = "${aws_alb_target_group.ecs_target_group.arn}"
+    target_group_arn = "${aws_alb_target_group.ecsTargetGroup.arn}"
     type = "forward"
   }
 }

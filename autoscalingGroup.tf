@@ -6,5 +6,5 @@ resource "aws_autoscaling_group" "ecs_autoscaling_group" {
   vpc_zone_identifier = [
     "${var.pub_sn_id}"]
   launch_configuration = "${aws_launch_configuration.ecs_launch_configuration.name}"
-  health_check_type = "ELB"
+  health_check_type = "EC2"
 }

@@ -14,6 +14,6 @@ output "ecsLoadBalancer-name" {
     value = "${aws_alb.ecsLoadBalancer.name}"
 }
 
-output "ecs_target_group-arn" {
-    value = "${aws_alb_target_group.ecs_target_group.arn}"
+output "ecsTargetGroup-arn" {
+    value = "${aws_alb_target_group.ecsTargetGroup.arn}"
 }
