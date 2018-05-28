@@ -10,8 +10,8 @@ output "ecs_instance_role-name" {
   value = "${aws_iam_role.ecs_instance_role.name}"
 }
 
-output "ecs_load_balancer-name" {
-    value = "${aws_alb.ecs_load_balancer.name}"
+output "ecsLoadBalancer-name" {
+    value = "${aws_alb.ecsLoadBalancer.name}"
 }
 
 output "ecs_target_group-arn" {

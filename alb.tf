@@ -1,12 +1,12 @@
-resource "aws_alb" "ecs_load_balancer" {
-  name = "ecs_load_balancer"
+resource "aws_alb" "ecsLoadBalancer" {
+  name = "ecsLoadBalancer"
   security_groups = [
     "${var.pub_sg_id}"]
   subnets = [
     "${var.pub_sn_id}"]
 
   tags {
-    Name = "ecs_load_balancer"
+    Name = "ecsLoadBalancer"
   }
 }
 
@@ -33,7 +33,7 @@ resource "aws_alb_target_group" "ecs_target_group" {
 }
 
 resource "aws_alb_listener" "alb_listener" {
-  load_balancer_arn = "${aws_alb.ecs_load_balancer.arn}"
+  load_balancer_arn = "${aws_alb.ecsLoadBalancer.arn}"
   port = "80"
   protocol = "HTTP"
 
