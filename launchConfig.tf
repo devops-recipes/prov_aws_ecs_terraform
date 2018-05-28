@@ -18,8 +18,8 @@ resource "aws_launch_configuration" "ecs_launch_configuration" {
     "${var.pub_sg_id}"]
   associate_public_ip_address = "true"
   key_name = "${var.ecs_key_pair_name}"
-  user_data = <<EOF
-              #!/bin/bash
-              echo ECS_CLUSTER=${var.ecs_cluster} >> /etc/ecs/ecs.config
-              EOF
+  user_data = <<-EOF
+    #!/bin/bash
+    echo ECS_CLUSTER=${var.ecs_cluster} >> /etc/ecs/ecs.config
+  EOF
 }
