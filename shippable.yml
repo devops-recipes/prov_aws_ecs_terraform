@@ -44,7 +44,7 @@ jobs:
                 #- vpc_id: ""
                 #- vpc_region: ""
                 #- vpc_public_sg_id: ""
-                #- $vpc_public_sn_id: ""
+                #- vpc_public_sn_id: ""
                 - ECS_CLUSTER: "cluster"
                 - ECS_KEY_PAIR_NAME: "dr_us_east_1"
                 - REGION: "us-east-1"
