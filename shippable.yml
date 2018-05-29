@@ -94,17 +94,16 @@ jobs:
           runtime:
             options:
               env:
-                - ECS_CLUSTER: "cluster"
                 - ECS_KEY_PAIR_NAME: "dr_us_east_1"
-                - REGION: "us-east-1"
                 - MAX_INSTANCE_SIZE: 3
                 - MIN_INSTANCE_SIZE: 1
                 - DESIRED_CAPACITY: 2
                 - ECS_INSTANCE_TYPE: "t2.micro"
                 - ECS_AMI_ID: "ami-fad25980"
           script:
-            - export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field aws_ecs_keys "accessKey")
-            - export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field aws_ecs_keys "secretKey")
+            - export AWS_ACCESS_KEY_ID=$(shipctl get_integration_resource_field "aws_ecs_keys" "accessKey")
+            - export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_resource_field "aws_ecs_keys" "secretKey")
+            - export ECS_CLUSTER=$(shipctl get_integration_resource_field "aws_ecs_cluster" "sourceName")
             - pushd $(shipctl get_resource_state "aws_ecs_repo")
             - shipctl copy_file_from_resource_state aws_ecs_tf_state terraform.tfstate .
             - shipctl replace terraform.tfvars
