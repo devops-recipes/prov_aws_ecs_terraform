@@ -10,7 +10,7 @@ resources:
 # AWS integration needed by Terraform
   - name: aws_ecs_keys
     type: integration
-    integration: "drship_aws"
+    integration: "dr_aws"
 
 # State resource to store Terraform State
   - name: aws_ecs_tf_state
