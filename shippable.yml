@@ -19,7 +19,7 @@ resources:
 # Cluster info output
   - name: aws_ecs_cluster
     type: cluster
-    integration: "drship_aws"
+    integration: "dr_aws"
     pointer:
       sourceName : "tbd" #name of the cluster to which we are deploying
       region: "tbd"
