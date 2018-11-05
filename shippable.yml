@@ -31,8 +31,7 @@ jobs:
     steps:
       - IN: aws_ecs_repo
       - IN: aws_vpc_tf_info
-      - IN: build_aws_ami_pack
-        switch: off
+      - IN: aws_ami_pack_info
       - IN: aws_ecs_keys
         switch: off
       - IN: aws_ecs_tf_state
