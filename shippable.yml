@@ -30,11 +30,12 @@ jobs:
     type: runSh
     steps:
       - IN: aws_ecs_repo
-      - IN: aws_vpc_tf_info
       - IN: aws_ami_pack_info
       - IN: aws_ecs_keys
         switch: off
       - IN: aws_ecs_tf_state
+        switch: off
+      - IN: aws_vpc_tf_info
         switch: off
       - TASK:
           name: prov_cluster
