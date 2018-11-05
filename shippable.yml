@@ -72,45 +72,45 @@ jobs:
       - aws
       - terraform
 
-## De-Provision Cluster
-#  - name: deprov_aws_ecs_tf
-#    type: runSh
-#    integrations:
-#      - dr_aws
-#    steps:
-#      - IN: aws_ecs_repo
-#        switch: off
-#      - IN: aws_vpc_tf_info
-#        switch: off
-#      - IN: aws_ecs_cluster
-#        switch: off
-#      - IN: aws_ecs_tf_state
-#        switch: off
-#      - TASK:
-#          name: deprov_cluster
-#          runtime:
-#            options:
-#              env:
-#                - ECS_KEY_PAIR_NAME: "dr_us_east_1"
-#                - MAX_INSTANCE_SIZE: 3
-#                - MIN_INSTANCE_SIZE: 1
-#                - DESIRED_CAPACITY: 2
-#                - ECS_INSTANCE_TYPE: "t2.micro"
-#                - ECS_AMI_ID: "ami-fad25980"
-#          script:
-#            - export AWS_ACCESS_KEY_ID=$(shipctl get_integration_field dr_aws "accessKey")
-#            - export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_field dr_aws "secretKey")
-#            - export ECS_CLUSTER=$(shipctl get_integration_resource_field "aws_ecs_cluster" "sourceName")
-#            - pushd $(shipctl get_resource_state "aws_ecs_repo")
-#            - shipctl copy_file_from_resource_state aws_ecs_tf_state terraform.tfstate .
-#            - shipctl replace terraform.tfvars
-#            - terraform init
-#            - terraform destroy -force -auto-approve -var-file=terraform.tfvars
-#      - OUT: aws_ecs_tf_state
-#    always:
-#      script:
-#        - shipctl copy_file_to_resource_state terraform.tfstate aws_ecs_tf_state
-#    flags:
-#      - aws_ecs
-#      - aws
-#      - terraform
+# De-Provision Cluster
+  - name: deprov_aws_ecs_tf
+    type: runSh
+    integrations:
+      - dr_aws
+    steps:
+      - IN: aws_ecs_repo
+        switch: off
+      - IN: aws_vpc_tf_info
+        switch: off
+      - IN: aws_ecs_cluster
+        switch: off
+      - IN: aws_ecs_tf_state
+        switch: off
+      - TASK:
+          name: deprov_cluster
+          runtime:
+            options:
+              env:
+                - ECS_KEY_PAIR_NAME: "dr_us_east_1"
+                - MAX_INSTANCE_SIZE: 3
+                - MIN_INSTANCE_SIZE: 1
+                - DESIRED_CAPACITY: 2
+                - ECS_INSTANCE_TYPE: "t2.micro"
+                - ECS_AMI_ID: "ami-fad25980"
+          script:
+            - export AWS_ACCESS_KEY_ID=$(shipctl get_integration_field dr_aws "accessKey")
+            - export AWS_SECRET_ACCESS_KEY=$(shipctl get_integration_field dr_aws "secretKey")
+            - export ECS_CLUSTER=$(shipctl get_integration_resource_field "aws_ecs_cluster" "sourceName")
+            - pushd $(shipctl get_resource_state "aws_ecs_repo")
+            - shipctl copy_file_from_resource_state aws_ecs_tf_state terraform.tfstate .
+            - shipctl replace terraform.tfvars
+            - terraform init
+            - terraform destroy -force -auto-approve -var-file=terraform.tfvars
+      - OUT: aws_ecs_tf_state
+    always:
+      script:
+        - shipctl copy_file_to_resource_state terraform.tfstate aws_ecs_tf_state
+    flags:
+      - aws_ecs
+      - aws
+      - terraform
