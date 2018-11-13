@@ -27,7 +27,7 @@ jobs:
       - dr_aws
     steps:
       - IN: aws_ecs_repo
-      - IN: aws_ami_pack_info
+#      - IN: aws_ami_pack_info
       - IN: aws_ecs_tf_state
         switch: off
       - IN: aws_vpc_tf_info
