@@ -30,8 +30,8 @@ jobs:
 #      - IN: aws_ami_pack_info
       - IN: aws_ecs_tf_state
         switch: off
-#      - IN: aws_vpc_tf_info
-#        switch: off
+##      - IN: aws_vpc_tf_info
+##        switch: off
       - TASK:
           name: prov_cluster
           runtime:
